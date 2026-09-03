@@ -12,24 +12,24 @@ CREATE TABLE IF NOT EXISTS mood_entries
     mood VARCHAR(120) NOT NULL
         CHECK (mood IN('CALM','HAPPY','TIRED','ANXIOUS','STRESSED','SAD','PEACEFUL','NEUTRAL')),
     note TEXT,
-    timestamp NOT NULL TIMESTAMP DEFAULT now()
+    time_stamp TIMESTAMP NOT NULL DEFAULT now()
 );
 
 CREATE TABLE IF NOT EXISTS journal_entries
 (
     id VARCHAR(120) PRIMARY KEY,
     content TEXT NOT NULL,
-    timestamp TIMESTAMP NOT NULL DEFAULT now()
+    time_stamp TIMESTAMP NOT NULL DEFAULT now()
 );
 
-CREATE TABLE focus_sessions
+CREATE TABLE IF NOT EXISTS focus_sessions
 (
     id         VARCHAR(120) PRIMARY KEY,
-    duration INTERVAL NOT NULL CHECK (duration > 0 ),
+    duration INTERVAL NOT NULL CHECK (duration > INTERVAL '0 seconds'),
     started_at TIMESTAMP NOT NULL DEFAULT now(),
     completed BOOLEAN NOT NULL DEFAULT false
 );
 
-CREATE INDEX idx_mood_entry_timestamp ON mood_entries(timestamp);
+CREATE INDEX IF NOT EXISTS idx_mood_entry_time_stamp ON mood_entries(time_stamp);
 
-CREATE INDEX idx_journal_entry_timestamp ON journal_entries(timestamp);
+CREATE INDEX IF NOT EXISTS idx_journal_entry_time_stamp ON journal_entries(time_stamp);
