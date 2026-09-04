@@ -10,7 +10,7 @@ import java.sql.SQLException;
 @Component
 public class DatabaseConnection {
 
-    private final Dotenv dotenv = Dotenv.load();
+    private static final Dotenv dotenv = Dotenv.load();
 
     public static Connection getConnection() throws SQLException {
         String url = dotenv.get("DB_URL");
