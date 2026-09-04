@@ -10,10 +10,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
 
 @Repository
 
 public class UserRepository {
+    public UserRepository() throws SQLException {
+    }
+
     private User mapRow(ResultSet rs) throws SQLException {
         return new User(
                 rs.getString("id"),
@@ -43,4 +47,17 @@ public class UserRepository {
         }
     }
 
+    public Optional<User> findById(String id) {
+        String findUserByIdQuery = "SELECT * FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(findUserByIdQuery);
+        ) {
+            ps.setString(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? Optional.of(mapRow(rs)) : Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new DatabaseException("Error finding user with id: " + id, e);
+        }
+    }
 }

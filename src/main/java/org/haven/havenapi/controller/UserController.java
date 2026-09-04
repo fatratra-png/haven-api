@@ -6,10 +6,7 @@ import org.haven.havenapi.model.User;
 import org.haven.havenapi.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
@@ -18,6 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("/{id}")
+    public User get(@PathVariable String id) {
+        return userService.getUser(id);
+    }
 
     @PostMapping
     public ResponseEntity<User> create(@RequestBody CreateUserDTO createUserDTO) {

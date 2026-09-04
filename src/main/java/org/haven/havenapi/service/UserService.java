@@ -2,6 +2,7 @@ package org.haven.havenapi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.haven.havenapi.dto.CreateUserDTO;
+import org.haven.havenapi.exception.UserNotFoundException;
 import org.haven.havenapi.model.User;
 import org.haven.havenapi.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -15,5 +16,9 @@ public class UserService {
 
     public User createUser(CreateUserDTO createUserDTO) {
         return userRepository.create(createUserDTO);
+    }
+
+    public User getUser(String id) {
+        return userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
     }
 }
