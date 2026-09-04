@@ -78,4 +78,17 @@ public class UserRepository {
             throw new RuntimeException(e);
         }
     }
+
+    public boolean deleteById(String id) {
+        String deleteQuery = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(deleteQuery);
+        ) {
+            ps.setString(1, id);
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            throw new DatabaseException("Error encountered on deleting user " + id, e);
+        }
+    }
 }

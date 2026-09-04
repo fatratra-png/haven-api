@@ -26,4 +26,10 @@ public class UserService {
     public User updateUser(String id, UpdateUserDTO updateUserDTO) {
         return userRepository.update(id, updateUserDTO).orElseThrow(() -> new UserNotFoundException(id));
     }
+
+    public void deleteUser(String id) {
+        if (!userRepository.deleteById(id)) {
+            throw new UserNotFoundException(id);
+        }
+    }
 }
