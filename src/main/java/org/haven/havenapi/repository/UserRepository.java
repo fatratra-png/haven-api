@@ -2,6 +2,7 @@ package org.haven.havenapi.repository;
 
 import org.haven.havenapi.config.DatabaseConnection;
 import org.haven.havenapi.dto.CreateUserDTO;
+import org.haven.havenapi.dto.UpdateUserDTO;
 import org.haven.havenapi.exception.DatabaseException;
 import org.haven.havenapi.model.User;
 import org.springframework.stereotype.Repository;
@@ -58,6 +59,23 @@ public class UserRepository {
             }
         } catch (SQLException e) {
             throw new DatabaseException("Error finding user with id: " + id, e);
+        }
+    }
+
+    public Optional<User> update(String id, UpdateUserDTO updateUserDTO) {
+        String updateQuery = "UPDATE users SET user_name = ?, age = ?, gender = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(updateQuery);
+        ) {
+            ps.setString(1, updateUserDTO.userName());
+            ps.setInt(2, updateUserDTO.age());
+            ps.setString(3, updateUserDTO.gender().name());
+            ps.setString(4, id);
+
+            int updated = ps.executeUpdate();
+            return updated == 0 ? Optional.empty() : findById(id);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
