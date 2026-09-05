@@ -41,8 +41,11 @@ public class QuoteRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(saveQuery);
         ) {
+            ps.setString(1, text);
+            ps.setString(2, author);
+            ps.setDate(3, Date.valueOf(date));
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) mapRow(rs);
+                if (rs.next()) return mapRow(rs);
                 return findByDate(date).orElseThrow(() -> new DatabaseException("Quote not found due to insertion conflict"));
             }
 
