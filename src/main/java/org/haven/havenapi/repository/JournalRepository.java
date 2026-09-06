@@ -43,7 +43,7 @@ public class JournalRepository {
 
     public List<JournalEntry> findByUserAndDate(String userId, LocalDate date) {
         String findByUserAndDateQuery = "SELECT * FROM journal_entries" +
-                "WHERE user_id = ? AND time_stamp = ?";
+                "WHERE user_id = ? AND time_stamp::date = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(findByUserAndDateQuery)
