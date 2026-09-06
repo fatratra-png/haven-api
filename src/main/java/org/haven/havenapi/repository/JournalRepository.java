@@ -42,8 +42,9 @@ public class JournalRepository {
     }
 
     public List<JournalEntry> findByUserAndDate(String userId, LocalDate date) {
-        String findByUserAndDateQuery = "SELECT * FROM journal_entries" +
-                "WHERE user_id = ? AND time_stamp::date = ?";
+        String findByUserAndDateQuery = "SELECT * FROM journal_entries " +
+                "WHERE user_id = ? AND time_stamp::date = ? " +
+                "ORDER BY time_stamp ASC";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(findByUserAndDateQuery)
