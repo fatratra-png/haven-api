@@ -20,14 +20,14 @@ public class FocusController {
 
     @PostMapping
     public ResponseEntity<FocusSession> start(@RequestBody CreateFocusSessionDTO createFocusSessionDTO) throws SQLException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(focusService.startSession(createFocusSessionDTO))
+        return ResponseEntity.status(HttpStatus.CREATED).body(focusService.startSession(createFocusSessionDTO));
     }
 
     @PatchMapping
     public ResponseEntity<Void> complete(@PathVariable String id,
                                          @RequestBody CompleteFocusSessionDTO completeFocusSessionDTO
-                                         ) throws SQLException {
-        focusService.completeSession(id,completeFocusSessionDTO.userId());
+    ) throws SQLException {
+        focusService.completeSession(id, completeFocusSessionDTO.userId());
         return ResponseEntity.noContent().build();
     }
 }
