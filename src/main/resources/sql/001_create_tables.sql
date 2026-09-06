@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS focus_sessions
 (
     id         VARCHAR(120) PRIMARY KEY DEFAULT ('F' || LPAD(nextval('focus_sessions_id_seq')::text, 5, '0')),
     user_id    VARCHAR(120) NOT NULL REFERENCES users (id) ON DELETE CASCADE,
-    duration   INTERVAL NOT NULL DEFAULT INTERVAL '10 minutes' CHECK (duration > INTERVAL '0 seconds'),
+    duration_seconds   INT NOT NULL DEFAULT 600 CHECK (duration_seconds>0),
     started_at TIMESTAMP NOT NULL DEFAULT now(),
     completed  BOOLEAN NOT NULL DEFAULT false
     );
