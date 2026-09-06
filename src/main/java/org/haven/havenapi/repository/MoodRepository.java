@@ -26,9 +26,9 @@ public class MoodRepository {
     }
 
     public MoodEntry insert(CreateMoodEntryDTO insertRequest) throws SQLException {
-        String insertQuery = "INSERT INTO mood_entries(user_id,mood,note,) " +
+        String insertQuery = "INSERT INTO mood_entries(user_id,mood,note) " +
                 "VALUES(?, ?, ?)" +
-                "RETURNING id,user_id,mood,note,time_stamp";
+                "RETURNING id,user_id,mood,note,time_stamp;";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(insertQuery)
         ) {
