@@ -18,7 +18,7 @@ public class JournalRepository {
                 rs.getString("id"),
                 rs.getString("user_id"),
                 rs.getString("content"),
-                rs.getTimestamp("times_tamp").toLocalDateTime()
+                rs.getTimestamp("time_stamp").toLocalDateTime()
         );
     }
 
