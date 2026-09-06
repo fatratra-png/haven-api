@@ -17,6 +17,7 @@ public class MoodRepository {
 
     private MoodEntry mapRow(ResultSet rs) throws SQLException {
         return new MoodEntry(
+                rs.getString("id"),
                 rs.getString("user_id"),
                 Mood.valueOf(rs.getString("mood")),
                 rs.getString("note"),

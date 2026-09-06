@@ -20,7 +20,7 @@ public class FocusController {
 
     @PostMapping
     public ResponseEntity<FocusSession> start(@RequestBody CreateFocusSessionDTO createFocusSessionDTO) throws SQLException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(focusService.startSession(createFocusSessionDTO))
+        return ResponseEntity.status(HttpStatus.CREATED).body(focusService.startSession(createFocusSessionDTO));
     }
 
     @PatchMapping

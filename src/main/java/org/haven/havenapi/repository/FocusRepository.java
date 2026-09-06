@@ -26,7 +26,7 @@ public class FocusRepository {
     }
 
     public FocusSession save(CreateFocusSessionDTO saveRequest) throws SQLException {
-        String saveQuery = "INSERT INTO focus_sessions(user_is,duration)" +
+        String saveQuery = "INSERT INTO focus_sessions(user_id,duration_seconds)" +
                 "VALUES(?,?)" +
                 "RETURNING id,user_id,duration_seconds,started_at,completed;";
 
@@ -34,7 +34,7 @@ public class FocusRepository {
              PreparedStatement ps = conn.prepareStatement(saveQuery)
         ) {
             ps.setString(1, saveRequest.userId());
-            ps.setString(2, saveRequest.duration().toString());
+            ps.setInt(2, (int) saveRequest.duration().toSeconds());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapRow(rs);
