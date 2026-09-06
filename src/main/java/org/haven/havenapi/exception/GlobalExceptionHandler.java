@@ -38,8 +38,8 @@ public class GlobalExceptionHandler {
                 .body("Unexcepted error");
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleFocusSessionNotFound(Exception ex) {
+    @ExceptionHandler(FocusSessionNotFoundException.class)
+    public ResponseEntity<String> handleFocusSessionNotFound(FocusSessionNotFoundException ex) {
         log.error("Focus session not found", ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
