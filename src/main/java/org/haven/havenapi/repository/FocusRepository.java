@@ -12,8 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Duration;
 
-import static java.lang.Integer.parseInt;
-
 @Repository
 
 public class FocusRepository {
@@ -36,7 +34,7 @@ public class FocusRepository {
              PreparedStatement ps = conn.prepareStatement(saveQuery)
         ) {
             ps.setString(1, saveRequest.userId());
-            ps.setInt(2, parseInt(String.valueOf(saveRequest.duration())));
+            ps.setInt(2, (int) saveRequest.duration().toSeconds());
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return mapRow(rs);
