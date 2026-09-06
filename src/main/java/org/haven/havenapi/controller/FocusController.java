@@ -26,8 +26,8 @@ public class FocusController {
     @PatchMapping
     public ResponseEntity<Void> complete(@PathVariable String id,
                                          @RequestBody CompleteFocusSessionDTO completeFocusSessionDTO
-    ) throws SQLException {
-        focusService.completeSession(id, completeFocusSessionDTO.userId());
+                                         ) throws SQLException {
+        focusService.completeSession(id,completeFocusSessionDTO.userId());
         return ResponseEntity.noContent().build();
     }
 }
