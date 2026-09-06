@@ -37,4 +37,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Unexcepted error");
     }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleFocusSessionNotFound(Exception ex) {
+        log.error("Focus session not found", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
 }
