@@ -47,7 +47,7 @@ public class MoodRepository {
 
     public List<MoodEntry> findByUserAndDate(String userId, LocalDate date) throws SQLException {
         String findByUserAndDateQuery = "SELECT * FROM mood_entries" +
-                "WHERE user_id = ? AND time_stamp = ?" +
+                "WHERE user_id = ? AND time_stamp::date = ?" +
                 "ORDER BY time_stamp ASC";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(findByUserAndDateQuery);
