@@ -1,0 +1,576 @@
+openapi: 3.1.0
+info:
+  title: Haven API
+  description: |
+    Haven is a mental wellness API that provides mood tracking, journaling, focus sessions,
+    and daily motivational quotes. Built with Spring Boot and PostgreSQL.
+  version: 1.0.0
+  contact:
+    name: Haven API Support
+  license:
+    name: MIT
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Users
+    description: User management operations
+  - name: Moods
+    description: Mood tracking operations
+  - name: Journals
+    description: Journal entry operations
+  - name: Focus Sessions
+    description: Focus session management
+  - name: Quotes
+    description: Daily motivational quotes
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      operationId: healthCheck
+      summary: Health check
+      description: Returns API health status.
+      responses:
+        '200':
+          description: API is running
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: API alive
+
+  /api/users/{id}:
+    get:
+      tags: [Users]
+      operationId: getUser
+      summary: Get user by ID
+      description: Retrieves a single user by their unique identifier.
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '200':
+          description: User found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Could not find user with id: H00001"
+
+    put:
+      tags: [Users]
+      operationId: updateUser
+      summary: Update user
+      description: Updates an existing user's information.
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserDTO'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: User not found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Could not find user with id: H00001"
+
+    delete:
+      tags: [Users]
+      operationId: deleteUser
+      summary: Delete user
+      description: Deletes a user by their unique identifier.
+      parameters:
+        - $ref: '#/components/parameters/UserId'
+      responses:
+        '204':
+          description: User deleted successfully
+        '404':
+          description: User not found
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Could not find user with id: H00001"
+
+  /api/users:
+    post:
+      tags: [Users]
+      operationId: createUser
+      summary: Create user
+      description: Creates a new user account.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserDTO'
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /api/moods:
+    post:
+      tags: [Moods]
+      operationId: createMoodEntry
+      summary: Create mood entry
+      description: Records a new mood entry for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMoodEntryDTO'
+      responses:
+        '201':
+          description: Mood entry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MoodEntry'
+
+    get:
+      tags: [Moods]
+      operationId: getMoodEntriesByDate
+      summary: Get mood entries by date
+      description: Retrieves all mood entries for a user on a specific date.
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: The user ID to filter mood entries by
+          schema:
+            type: string
+            example: H00001
+        - name: date
+          in: query
+          required: true
+          description: The date to filter mood entries by (ISO-8601 format)
+          schema:
+            type: string
+            format: date
+            example: "2026-09-10"
+      responses:
+        '200':
+          description: Mood entries found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MoodEntry'
+
+  /api/journals:
+    post:
+      tags: [Journals]
+      operationId: createJournalEntry
+      summary: Create journal entry
+      description: Records a new journal entry for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJournalEntryDTO'
+      responses:
+        '201':
+          description: Journal entry created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JournalEntry'
+
+    get:
+      tags: [Journals]
+      operationId: getJournalEntriesByDate
+      summary: Get journal entries by date
+      description: Retrieves all journal entries for a user on a specific date.
+      parameters:
+        - name: userId
+          in: query
+          required: true
+          description: The user ID to filter journal entries by
+          schema:
+            type: string
+            example: H00001
+        - name: date
+          in: query
+          required: true
+          description: The date to filter journal entries by (ISO-8601 format)
+          schema:
+            type: string
+            format: date
+            example: "2026-09-10"
+      responses:
+        '200':
+          description: Journal entries found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/JournalEntry'
+
+  /api/focus-sessions:
+    post:
+      tags: [Focus Sessions]
+      operationId: startFocusSession
+      summary: Start a focus session
+      description: Starts a new focus session for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFocusSessionDTO'
+      responses:
+        '201':
+          description: Focus session started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FocusSession'
+
+  /api/focus-sessions/{id}/complete:
+    patch:
+      tags: [Focus Sessions]
+      operationId: completeFocusSession
+      summary: Complete a focus session
+      description: Marks a focus session as completed.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The focus session ID
+          schema:
+            type: string
+            example: F00001
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteFocusSessionDTO'
+      responses:
+        '204':
+          description: Focus session completed successfully
+        '404':
+          description: Focus session not found or doesn't belong to this user
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Focus session not found | doesn't belong to this user: F00001"
+
+  /api/quotes:
+    get:
+      tags: [Quotes]
+      operationId: getTodaysQuote
+      summary: Get today's quote
+      description: |
+        Retrieves today's motivational quote. If not cached in the database,
+        fetches from the ZenQuotes.io external API and caches the result.
+      responses:
+        '200':
+          description: Quote retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '503':
+          description: Quote service temporarily unavailable
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Quote service temporarily unavailable
+
+  /api/quotes/today:
+    get:
+      tags: [Quotes]
+      operationId: getTodaysQuoteExplicit
+      summary: Get today's quote (explicit path)
+      description: |
+        Retrieves today's motivational quote. This is an alternative endpoint
+        with an explicit `/today` path. Same behavior as `/api/quotes`.
+      responses:
+        '200':
+          description: Quote retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quote'
+        '503':
+          description: Quote service temporarily unavailable
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Quote service temporarily unavailable
+
+components:
+  parameters:
+    UserId:
+      name: id
+      in: path
+      required: true
+      description: "The unique user identifier (format: H{NNNNN})"
+      schema:
+        type: string
+        pattern: '^H\d{5}$'
+        example: H00001
+
+  schemas:
+    User:
+      type: object
+      description: A user in the Haven system
+      properties:
+        id:
+          type: string
+          description: Unique user identifier
+          pattern: '^H\d{5}$'
+          example: H00001
+        username:
+          type: string
+          description: The user's display name
+          example: john_doe
+        age:
+          type: integer
+          description: The user's age
+          minimum: 15
+          maximum: 90
+          example: 25
+        gender:
+          $ref: '#/components/schemas/Gender'
+      required: [id, username, age, gender]
+
+    Gender:
+      type: string
+      description: User gender
+      enum: [MALE, FEMALE]
+
+    CreateUserDTO:
+      type: object
+      description: Request body for creating a new user
+      properties:
+        userName:
+          type: string
+          description: The user's display name
+          example: john_doe
+        age:
+          type: integer
+          description: The user's age (must be between 15 and 90)
+          minimum: 15
+          maximum: 90
+          example: 25
+        gender:
+          $ref: '#/components/schemas/Gender'
+      required: [userName, age, gender]
+
+    UpdateUserDTO:
+      type: object
+      description: Request body for updating an existing user
+      properties:
+        userName:
+          type: string
+          description: The user's display name
+          example: john_doe
+        age:
+          type: integer
+          description: The user's age (must be between 15 and 90)
+          minimum: 15
+          maximum: 90
+          example: 25
+        gender:
+          $ref: '#/components/schemas/Gender'
+      required: [userName, age, gender]
+
+    Mood:
+      type: string
+      description: Available mood types
+      enum: [CALM, HAPPY, TIRED, ANXIOUS, STRESSED, SAD, PEACEFUL, NEUTRAL]
+
+    MoodEntry:
+      type: object
+      description: A recorded mood entry
+      properties:
+        id:
+          type: string
+          description: Unique mood entry identifier
+          pattern: '^M\d{5}$'
+          example: M00001
+        userId:
+          type: string
+          description: The ID of the user this entry belongs to
+          example: H00001
+        mood:
+          $ref: '#/components/schemas/Mood'
+        note:
+          type: string
+          nullable: true
+          description: Optional note about the mood
+          example: Feeling great after a morning walk
+        timestamp:
+          type: string
+          format: date-time
+          description: When the mood entry was recorded (ISO-8601)
+          example: "2026-09-10T14:30:00"
+      required: [id, userId, mood, timestamp]
+
+    CreateMoodEntryDTO:
+      type: object
+      description: Request body for creating a mood entry
+      properties:
+        userId:
+          type: string
+          description: The ID of the user recording the mood
+          example: H00001
+        mood:
+          $ref: '#/components/schemas/Mood'
+        note:
+          type: string
+          nullable: true
+          description: Optional note about the mood
+          example: Feeling great after a morning walk
+      required: [userId, mood]
+
+    JournalEntry:
+      type: object
+      description: A journal entry
+      properties:
+        id:
+          type: string
+          description: Unique journal entry identifier
+          pattern: '^J\d{5}$'
+          example: J00001
+        userId:
+          type: string
+          description: The ID of the user this entry belongs to
+          example: H00001
+        content:
+          type: string
+          description: The journal entry content
+          example: Today was a productive day. I finished all my tasks early.
+        timestamp:
+          type: string
+          format: date-time
+          description: When the journal entry was recorded (ISO-8601)
+          example: "2026-09-10T18:00:00"
+      required: [id, userId, content, timestamp]
+
+    CreateJournalEntryDTO:
+      type: object
+      description: Request body for creating a journal entry
+      properties:
+        userId:
+          type: string
+          description: The ID of the user creating the entry
+          example: H00001
+        content:
+          type: string
+          description: The journal entry content
+          example: Today was a productive day. I finished all my tasks early.
+      required: [userId, content]
+
+    FocusSession:
+      type: object
+      description: A focus/pomodoro session
+      properties:
+        id:
+          type: string
+          description: Unique focus session identifier
+          pattern: '^F\d{5}$'
+          example: F00001
+        userId:
+          type: string
+          description: The ID of the user this session belongs to
+          example: H00001
+        duration:
+          type: string
+          format: duration
+          description: Session duration in ISO-8601 duration format
+          example: "PT20M"
+        startedAt:
+          type: string
+          format: date-time
+          description: When the session was started (ISO-8601)
+          example: "2026-09-10T09:00:00"
+        completed:
+          type: boolean
+          description: Whether the session has been completed
+          example: false
+      required: [id, userId, duration, startedAt, completed]
+
+    CreateFocusSessionDTO:
+      type: object
+      description: Request body for starting a focus session
+      properties:
+        userId:
+          type: string
+          description: The ID of the user starting the session
+          example: H00001
+        duration:
+          type: string
+          format: duration
+          description: Desired session duration in ISO-8601 duration format
+          example: "PT20M"
+      required: [userId, duration]
+
+    CompleteFocusSessionDTO:
+      type: object
+      description: Request body for completing a focus session
+      properties:
+        userId:
+          type: string
+          description: The ID of the user completing the session
+          example: H00001
+      required: [userId]
+
+    Quote:
+      type: object
+      description: A daily motivational quote
+      properties:
+        id:
+          type: string
+          description: Unique quote identifier
+          pattern: '^Q\d{5}$'
+          example: Q00001
+        text:
+          type: string
+          description: The quote text
+          example: "The only way to do great work is to love what you do."
+        author:
+          type: string
+          nullable: true
+          description: The quote author
+          example: "Steve Jobs"
+        date:
+          type: string
+          format: date
+          description: The date this quote is for (ISO-8601)
+          example: "2026-09-10"
+      required: [id, text, date]
