@@ -13,8 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuoteController {
     private final QuoteService quoteService;
 
-    @GetMapping("/today")
+    @GetMapping
     public Quote getToday() {
+        return quoteService.getTodayQuote();
+    }
+
+    @GetMapping("/today")
+    public Quote getTodayExplicit() {
         return quoteService.getTodayQuote();
     }
 }
